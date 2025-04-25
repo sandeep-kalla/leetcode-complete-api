@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode API Tester</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LeetCode API Tester</h1>
+            <p>A simple interface to test the LeetCode API backend</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="auth">Authentication</button>
+            <button class="tab-btn" data-tab="daily">Daily Challenge</button>
+            <button class="tab-btn" data-tab="problems">Problems</button>
+            <button class="tab-btn" data-tab="submissions">Submissions</button>
+            <button class="tab-btn" data-tab="questions">Questions</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Authentication Tab -->
+            <div class="tab-pane active" id="auth">
+                <h2>Authentication</h2>
+                <div class="card">
+                    <h3>Authentication Credentials</h3>
+                    <p>Enter your LeetCode authentication credentials below. These will be used for all API requests that require authentication.</p>
+                    <div class="alert alert-info">
+                        <strong>How to get your LeetCode credentials:</strong>
+                        <ol>
+                            <li>Log in to <a href="https://leetcode.com" target="_blank">LeetCode</a></li>
+                            <li>Open browser developer tools (F12 or right-click > Inspect)</li>
+                            <li>Go to the "Application" or "Storage" tab</li>
+                            <li>Under "Cookies", find "leetcode.com"</li>
+                            <li>Copy the value of the "LEETCODE_SESSION" cookie into the Cookie field below</li>
+                            <li>Copy the value of the "csrftoken" cookie into the CSRF Token field below</li>
+                        </ol>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-cookie">Cookie (required for submissions):</label>
+                        <textarea id="auth-cookie" rows="3" placeholder="Enter LeetCode cookie here (LEETCODE_SESSION=...)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-csrf">CSRF Token (required for submissions):</label>
+                        <input type="text" id="auth-csrf" placeholder="Enter CSRF token here...">
+                    </div>
+                    <button class="btn" id="check-auth-btn">Check Authentication</button>
+                </div>
+                <div class="result-container" id="auth-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Fetch Cookies</h3>
+                    <p>Get instructions on how to fetch cookies from LeetCode</p>
+                    <button class="btn" id="fetch-cookies-btn">Fetch Cookies</button>
+                </div>
+                <div class="result-container" id="cookies-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+            </div>
+
+            <!-- Daily Challenge Tab -->
+            <div class="tab-pane" id="daily">
+                <h2>Daily Challenge</h2>
+                <div class="card">
+                    <h3>Get Daily Challenge</h3>
+                    <p>Fetch today's LeetCode daily challenge</p>
+                    <button class="btn" id="get-daily-btn">Fetch Daily Challenge</button>
+                </div>
+                <div class="result-container" id="daily-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+            </div>
+
+            <!-- Problems Tab -->
+            <div class="tab-pane" id="problems">
+                <h2>Problems</h2>
+                <div class="card">
+                    <h3>Get Problem by Title Slug</h3>
+                    <p>Fetch a LeetCode problem by its title slug</p>
+                    <div class="form-group">
+                        <label for="problem-slug">Title Slug:</label>
+                        <input type="text" id="problem-slug" placeholder="e.g., two-sum" value="two-sum">
+                    </div>
+                    <button class="btn" id="get-problem-btn">Fetch Problem</button>
+                </div>
+                <div class="result-container" id="problem-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Submit Solution</h3>
+                    <p>Submit a solution to a LeetCode problem</p>
+                    <div class="form-group">
+                        <label for="submit-slug">Title Slug:</label>
+                        <input type="text" id="submit-slug" placeholder="e.g., two-sum" value="two-sum">
+                    </div>
+                    <div class="form-group">
+                        <label for="submit-lang">Language:</label>
+                        <select id="submit-lang">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python3">Python 3</option>
+                            <option value="cpp">C++</option>
+                            <option value="java">Java</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="submit-question-id">Question ID:</label>
+                        <input type="text" id="submit-question-id" placeholder="e.g., 1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="submit-code">Code:</label>
+                        <textarea id="submit-code" rows="8" placeholder="Enter your code here...">/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    const map = new Map();
+    for (let i = 0; i < nums.length; i++) {
+        const complement = target - nums[i];
+        if (map.has(complement)) {
+            return [map.get(complement), i];
+        }
+        map.set(nums[i], i);
+    }
+    return [];
+};</textarea>
+                    </div>
+                    <button class="btn" id="submit-solution-btn">Submit Solution</button>
+                </div>
+                <div class="result-container" id="submit-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+            </div>
+
+            <!-- Submissions Tab -->
+            <div class="tab-pane" id="submissions">
+                <h2>Submissions</h2>
+                <div class="card">
+                    <h3>Run Code</h3>
+                    <p>Run code for a LeetCode problem without submitting it</p>
+                    <div class="form-group">
+                        <label for="run-slug">Title Slug:</label>
+                        <input type="text" id="run-slug" placeholder="e.g., two-sum" value="two-sum">
+                    </div>
+                    <div class="form-group">
+                        <label for="run-lang">Language:</label>
+                        <select id="run-lang">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python3">Python 3</option>
+                            <option value="cpp">C++</option>
+                            <option value="java">Java</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="run-question-id">Question ID:</label>
+                        <input type="text" id="run-question-id" placeholder="e.g., 1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="run-code">Code:</label>
+                        <textarea id="run-code" rows="8" placeholder="Enter your code here...">/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    const map = new Map();
+    for (let i = 0; i < nums.length; i++) {
+        const complement = target - nums[i];
+        if (map.has(complement)) {
+            return [map.get(complement), i];
+        }
+        map.set(nums[i], i);
+    }
+    return [];
+};</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="run-input">Test Input:</label>
+                        <textarea id="run-input" rows="3" placeholder="Enter test input here...">[2,7,11,15]
+9</textarea>
+                    </div>
+                    <button class="btn" id="run-code-btn">Run Code</button>
+                </div>
+                <div class="result-container" id="run-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Check Run Result</h3>
+                    <p>Check the result of a code run</p>
+                    <div class="form-group">
+                        <label for="check-run-id">Interpret ID:</label>
+                        <input type="text" id="check-run-id" placeholder="e.g., interpret_id">
+                    </div>
+                    <button class="btn" id="check-run-btn">Check Run Result</button>
+                </div>
+                <div class="result-container" id="check-run-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>Check Submission</h3>
+                    <p>Check the status of a submission</p>
+                    <div class="form-group">
+                        <label for="check-submission-id">Submission ID:</label>
+                        <input type="text" id="check-submission-id" placeholder="e.g., submission_id">
+                    </div>
+                    <button class="btn" id="check-submission-btn">Check Submission</button>
+                </div>
+                <div class="result-container" id="check-submission-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+            </div>
+
+            <!-- Questions Tab -->
+            <div class="tab-pane" id="questions">
+                <h2>Questions</h2>
+                <div class="card">
+                    <h3>Get All Questions</h3>
+                    <p>Fetch all LeetCode questions with pagination and filtering</p>
+                    <div class="form-group">
+                        <label for="questions-category">Category:</label>
+                        <input type="text" id="questions-category" placeholder="e.g., all-code-essentials" value="all-code-essentials">
+                    </div>
+                    <div class="form-group">
+                        <label for="questions-page">Page:</label>
+                        <input type="number" id="questions-page" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="questions-page-size">Page Size:</label>
+                        <input type="number" id="questions-page-size" min="1" max="500" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="questions-difficulty">Difficulty:</label>
+                        <select id="questions-difficulty">
+                            <option value="">All</option>
+                            <option value="EASY">Easy</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="HARD">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="questions-search">Search:</label>
+                        <input type="text" id="questions-search" placeholder="Search by title or ID">
+                    </div>
+                    <button class="btn" id="get-questions-btn">Fetch Questions</button>
+                </div>
+                <div class="result-container" id="questions-result">
+                    <h3>Result</h3>
+                    <pre><code class="json"></code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>LeetCode API Tester &copy; 2023</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
