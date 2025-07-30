@@ -110,38 +110,19 @@ class QuestionsService {
     try {
       logger.info(`Fetching questions with category: ${category}, skip: ${skip}, limit: ${limit}, filters: ${JSON.stringify(filters)}`);
       
-      // Build variables for the GraphQL query
-      const variables = {
-        categorySlug: category,
-        skip,
-        limit,
-        filters: {}
-      };
-      
-      // Add difficulty filter if provided
-      if (filters.difficulty) {
-        variables.filters.difficulty = filters.difficulty;
-      }
-      
-      // Add search filter if provided
-      if (filters.search) {
-        variables.searchKeyword = filters.search;
-      }
+      // Variables are now built directly in the query object below
       
       const query = {
         operationName: "problemsetQuestionListV2",
         query: `
-          query problemsetQuestionListV2($filters: QuestionFilterInput, $limit: Int, $searchKeyword: String, $skip: Int, $sortBy: QuestionSortByInput, $categorySlug: String) {
+          query problemsetQuestionListV2($categorySlug: String, $limit: Int, $searchKeyword: String, $skip: Int) {
             problemsetQuestionListV2(
-              filters: $filters
+              categorySlug: $categorySlug
               limit: $limit
               searchKeyword: $searchKeyword
               skip: $skip
-              sortBy: $sortBy
-              categorySlug: $categorySlug
             ) {
               questions {
-                id
                 titleSlug
                 title
                 questionFrontendId
@@ -155,12 +136,15 @@ class QuestionsService {
                 acRate
               }
               totalLength
-              finishedLength
-              hasMore
             }
           }
         `,
-        variables
+        variables: {
+          categorySlug: category,
+          skip,
+          limit,
+          searchKeyword: filters.search || null
+        }
       };
 
       const response = await graphqlClient.post('', query);
@@ -181,7 +165,7 @@ class QuestionsService {
       
       // Map the response to match our expected format
       const formattedQuestions = questions.map(q => ({
-        questionId: q.id.toString(),
+        questionId: q.questionFrontendId.toString(),
         questionFrontendId: q.questionFrontendId,
         title: q.title,
         titleSlug: q.titleSlug,
